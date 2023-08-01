@@ -1,0 +1,64 @@
+1. Create Folders and Files: TO ASK ABOUT PATH
+
+New-Item -Path C:\ -Name "Source" -ItemType "directory"
+New-Item -Path C:\ -Name "Destination" -ItemType "directory"
+New-Item -Path C:\Source -Name "file.txt" -ItemType "file"
+
+2. Move a file:
+
+Move-Item -Path C:\Source\file.txt -Destination C:\Destination
+
+3. Rename a file
+
+Rename-Item -Path C:\Destination\file.txt -NewName "newname.txt"
+
+4. Read and display file contents:
+
+Get-Content -Path C:\Destination\newname.txt
+
+5. Check if a File Exists and Delete:
+
+$file = C:\Users\GG\Desktop\teme qa\teme sedinta 4 QA manual\TEST\CEVA.txt"
+if (Test-Path $file) {
+    Remove-Item -Path $file
+} else {
+    Write-Host "File not found."
+}
+
+6. Get status of specific processes
+
+$processNames = @("notepad", "chrome")
+foreach ($name in $processNames) {
+    $process = Get-Process -Name $name -ErrorAction SilentlyContinue
+    if ($process) {
+        Write-Host "$name is running with ID $($process.Id)"
+    } else {
+        Write-Host "$name is not running."
+    }
+}
+
+7. Filter Events by Source and Log Name: N-AM INTELES NIMIC
+
+$logs = Get-EventLog -LogName "System" -Source "Service Control Manager" -Newest 10
+foreach ($log in $logs) {
+    Write-Host "Event ID $($log.EventID) from $($log.Source): $($log.Message)"
+}
+
+8. Get process with custom formating : VM = VIRTUAL MEMORY
+
+$processes = Get-Process | Sort-Object -Property VM -Descending | Select-Object -Property Name, VM, PM, Company, Product -First 5
+$processes | Format-Table -AutoSize
+
+9. Output to CSV and HTML
+
+Get-Process | Select-Object -Property Name, ID, VM, PM | Export-Csv -Path "processes.csv" -NoTypeInformation
+Get-Process | Select-Object -Property Name, ID, VM, PM | ConvertTo-Html | Out-File "processes.html"
+
+10. Filter Processes by Memory Usage and Kill: NEINCERCAT PT CA NU VOIAM SA MI SE INCHIDA APLICATIILE
+
+$threshold = 100000000 # 100MB
+$processes = Get-Process | Where-Object { $_.WorkingSet64 -gt $threshold }
+foreach ($process in $processes) {
+    Write-Host "Killing $($process.Name) with ID $($process.Id) using $($process.WorkingSet64) bytes of memory."
+    Stop-Process -Id $process.Id
+}
